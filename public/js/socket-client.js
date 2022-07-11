@@ -7,20 +7,23 @@ const btnSend = document.querySelector('#btnSend');
 const socket = io();
 
 socket.on('connect', () => {
-  console.log('Connected');
-
   lblOffline.style.display = 'none';
   lblOnline.style.display = '';
 });
 
 socket.on('disconnect', () => {
-  console.log('Disconnect from server');
   lblOffline.style.display = '';
   lblOnline.style.display = 'none';
+});
+
+socket.on('send-msg', (payload) => {
+  console.log(payload); // Client recieve payload from server
 });
 
 btnSend.addEventListener('click', () => {
   const message = txtMessage.value;
   const payload = { message, id: 'ABC123', date: new Date().getTime() };
-  socket.emit('send-msg', payload);
+  socket.emit('send-msg', payload, (id) => {
+    console.log('From server', id);
+  });
 });
